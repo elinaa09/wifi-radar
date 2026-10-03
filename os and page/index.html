@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WiFi Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div>
+      <h1>WiFi Radar</h1>
+      <p class="sub">Networks around you, refreshed live.</p>
+    </div>
+    <div class="status" id="status" role="status">
+      <span class="pulse" aria-hidden="true"></span>
+      <span id="statusText">Scanning…</span>
+    </div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <main class="layout">
+    <section class="radar-panel" aria-label="Radar view of nearby networks">
+      <div class="radar-wrap">
+        <canvas id="radar" width="640" height="640"></canvas>
+      </div>
+      <p class="radar-note">You are at the centre. Each dot is an access point placed by estimated distance; direction is only for spreading dots apart.</p>
+      <dl class="summary">
+        <div><dt>Networks</dt><dd id="sumCount">0</dd></div>
+        <div><dt>Nearest</dt><dd id="sumNearest">–</dd></div>
+        <div><dt>Fastest link</dt><dd id="sumFastest">–</dd></div>
+      </dl>
+    </section>
+
+    <section class="list-panel" aria-label="Network list">
+      <div class="controls">
+        <div class="chips" role="group" aria-label="Filter by band">
+          <button class="chip is-on" data-band="all">All</button>
+          <button class="chip" data-band="2.4 GHz">2.4 GHz</button>
+          <button class="chip" data-band="5 GHz">5 GHz</button>
+          <button class="chip" data-band="6 GHz">6 GHz</button>
+        </div>
+        <label class="sort">Sort by
+          <select id="sort">
+            <option value="signal_percent">Signal</option>
+            <option value="distance_m">Distance</option>
+            <option value="speed_mbps">Speed</option>
+            <option value="range_m">Range</option>
+            <option value="ssid">Name</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Network</th>
+              <th>Signal</th>
+              <th class="num">Speed</th>
+              <th class="num">Distance</th>
+              <th class="num">Range</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="5" class="empty">Looking for networks…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="foot">
+        <strong>speed</strong> is the maximum link rate the access point advertises, not your internet speed.
+        <strong>Distance</strong> and <strong>Range</strong> are estimates from signal strength and band; walls and interference change them.
+      </p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
