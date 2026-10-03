@@ -143,11 +143,17 @@ _DEMO = [
 ]
 
 
+_demo_offset = {}
+
+
 def scan_demo():
     nets = []
     for ssid, bssid, chan, freq, rate, pct, sec, in_use in _DEMO:
-        jitter = random.randint(-4, 4)
-        nets.append(build_network(ssid, bssid, chan, freq, rate, max(5, min(99, pct + jitter)), sec, in_use))
+        # random walk around the base level, kept within +/-12 points
+        off = _demo_offset.get(bssid, 0) + random.randint(-3, 3)
+        off = max(-12, min(12, off))
+        _demo_offset[bssid] = off
+        nets.append(build_network(ssid, bssid, chan, freq, rate, max(5, min(99, pct + off)), sec, in_use))
     nets.sort(key=lambda n: -n["signal_percent"])
     return nets
 

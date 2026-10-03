@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>WiFi Radar</title>
+  <script>
+    // Set the theme before the page paints so it never flashes the wrong colours.
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem("wifi-radar-theme"); } catch (e) {}
+      var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,9 +24,12 @@
       <h1>WiFi Radar</h1>
       <p class="sub">Networks around you, refreshed live.</p>
     </div>
-    <div class="status" id="status" role="status">
-      <span class="pulse" aria-hidden="true"></span>
-      <span id="statusText">Scanning…</span>
+    <div class="top-actions">
+      <div class="status" id="status" role="status">
+        <span class="pulse" aria-hidden="true"></span>
+        <span id="statusText">Scanning…</span>
+      </div>
+      <button class="theme-btn" id="themeBtn" type="button">Dark mode</button>
     </div>
   </header>
 
@@ -61,23 +73,44 @@
             <tr>
               <th>Network</th>
               <th>Signal</th>
+              <th>Signal trend</th>
               <th class="num">Speed</th>
               <th class="num">Distance</th>
               <th class="num">Range</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="5" class="empty">Looking for networks…</td></tr>
+            <tr><td colspan="6" class="empty">Looking for networks…</td></tr>
           </tbody>
         </table>
       </div>
 
       <p class="foot">
-        <strong>speed</strong> is the maximum link rate the access point advertises, not your internet speed.
+        <strong>Speed</strong> is the maximum link rate the access point advertises, not your internet speed.
         <strong>Distance</strong> and <strong>Range</strong> are estimates from signal strength and band; walls and interference change them.
       </p>
     </section>
   </main>
+
+  <section class="channel-panel" aria-label="Channel congestion">
+    <div class="channel-head">
+      <div>
+        <h2>Channel congestion</h2>
+        <p class="sub">Each curve is one network. Curves that overlap are sharing airtime and slowing each other down.</p>
+      </div>
+      <div class="chips" role="group" aria-label="Channel band">
+        <button class="chip is-on" data-chband="2.4 GHz">2.4 GHz</button>
+        <button class="chip" data-chband="5 GHz">5 GHz</button>
+        <button class="chip" data-chband="6 GHz">6 GHz</button>
+      </div>
+    </div>
+    <div class="channel-body">
+      <div class="chart-wrap">
+        <canvas id="channels"></canvas>
+      </div>
+      <aside class="best" id="best" aria-live="polite"></aside>
+    </div>
+  </section>
 
   <script src="app.js"></script>
 </body>
